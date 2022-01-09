@@ -11,13 +11,17 @@ Also, I've wanted to take a look at the  [babashka task runner](https://book.bab
 
 ## Usage
 
-Commands are available as babashka tasks. Use `corpus` to fetch a corpus of words, or go directly to `solve` (will ensure the corpus is available if it's missing). Without additional information, it will return return what it deems to be the most likely solution. It will incorporate feedback to narrow down the search space. When you're done, you can clean everything up using `clean` (removes the corpus).
+Commands are available as babashka tasks:
+
+- Use `corpus` to fetch a corpus of words, or go directly to
+- `solve` (will ensure the corpus is available if it's missing). Feedback obtained from wordle can be passed on the command line to receive the next guess (see example below).
+- When you're done, you can clean everything up using `clean` (removes the corpus).
 
 ### Example
 
 Let's say the wordle is `toast`.
 
-We have no information so let's just guess a word (Tries to use one that uses frequently used letters as per the corpus).
+We have no information so the script picks a word (using the most frequently used letters in the corpus).
 
 ```bash
 > bb run solve
@@ -43,7 +47,7 @@ So our `r` in first position that is absent from our target word is encoded as `
 stain
 ```
 
-![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png) ![yellow](https://abs-0.twimg.com/emoji/v2/72x72/1f7e8.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png) ![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png) ![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png)
+![yellow](https://abs-0.twimg.com/emoji/v2/72x72/1f7e8.png) ![yellow](https://abs-0.twimg.com/emoji/v2/72x72/1f7e8.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png) ![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png) ![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png)
 
 Finally! A correct placement!
 
