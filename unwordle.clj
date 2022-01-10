@@ -2,14 +2,12 @@
   (:require [clojure.string :as str]
             [babashka.fs :as fs]))
 
-(def corpus-remote "https://pcai056.informatik.uni-leipzig.de/downloads/corpora/eng_news_2020_300K.tar.gz")
-(def corpus-ref ".corpus")
-(def file (delay (slurp corpus-ref)))
+(def corpus-remote "https://raw.githubusercontent.com/jesstess/Scrabble/master/scrabble/sowpods.txt")
+(def file "sowpods.txt")
 
 (def raw-words (delay
-                 (->> (slurp @file)
+                 (->> (slurp file)
                       (str/split-lines)
-                      (mapv #(nth (str/split % #"\t") 1))
                       (filter #(= 5 (count %)))
                       (mapv str/lower-case))))
 
@@ -64,7 +62,7 @@
           word-responses))
 
 (defn solve [responses]
-  (when-not (fs/exists? @file)
+  (when-not (fs/exists? file)
     (throw (Exception. (str "corpus missing: " file))))
   (let [[has ban pos anti-pos] (build-constraints (partition 5 responses))]
     (println (choose @words has ban pos anti-pos true))))

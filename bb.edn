@@ -6,23 +6,9 @@
                     [clojure.string :as str])
          clean (do (fs/delete-tree (fs/parent (deref unwordle/file)))
                    (fs/delete unwordle/corpus-ref))
-         corpus (when-not (and (fs/exists? unwordle/corpus-ref)
-                               (fs/exists? (deref unwordle/file)))
+         corpus (when-not (fs/exists? unwordle/file)
                   (println "no corpus found. fetching from: " unwordle/corpus-remote)
-                  (let [contents-file "tar_contents.txt"
-                        tar-file "corpus_tmp.tgz"]
-                    (try
-                      (io/copy (:body (curl/get unwordle/corpus-remote {:as :bytes}))
-                               (io/file tar-file))
-                      (shell {:out contents-file}"tar tf" tar-file)
-                      (let [corpus-file (->> (slurp contents-file)
-                                             str/split-lines
-                                             (filter (fn [f] (re-matches (re-pattern ".*words.txt") f)))
-                                             first)]
-                        (shell "tar xzvf" tar-file corpus-file)
-                        (spit unwordle/corpus-ref corpus-file))
-                      (finally
-                        (fs/delete contents-file)
-                        (fs/delete tar-file)))))
+                  (io/copy (:body (curl/get unwordle/corpus-remote {:as :bytes}))
+                           (io/file unwordle/file)))
          solve {:depends [corpus]
                 :task (unwordle/solve *command-line-args*)}}}
