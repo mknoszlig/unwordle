@@ -11,8 +11,6 @@
                       (filter #(= 5 (count %)))
                       (mapv str/lower-case))))
 
-(def word-freqs (delay (frequencies @raw-words)))
-
 (def words (delay (set @raw-words)))
 
 (defn position-zapper [positions]
@@ -46,7 +44,7 @@
           (= 1 (count words'))
           (first words')
           (= 5 (count has?))
-          (last (sort-by @word-freqs words'))
+          (rand-nth words')
           :else
           (let [avail-freqs (apply dissoc (letter-freqs words' (keys pos)) has?)
                 cand (or (max-freq avail-freqs)
