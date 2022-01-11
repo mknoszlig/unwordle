@@ -15,13 +15,19 @@
 
 (def words (delay (set @raw-words)))
 
-(defn letter-freqs [words]
-  (frequencies (apply concat words)))
+(defn position-zapper [positions]
+  (fn [s]
+    (->> (remove (set positions) (range (count s)))
+         (mapv (partial nth s)))))
+
+(defn letter-freqs [words fixed-positions]
+  (frequencies (mapcat (position-zapper fixed-positions) words)))
 
 (defn max-freq [freqs]
-  (-> (sort-by last freqs)
-      last
-      first))
+  (let [[c c' & _] (-> (sort-by last freqs)
+                       reverse)]
+    (when (not= (last c) (last c'))
+      (first c))))
 
 (defn apply-constraints [words has? ban? pos anti-pos]
   (->> (remove #(some ban? %) words)
@@ -29,8 +35,8 @@
        (filter #(every? (fn [[i ch]] (= ch (nth % i))) pos))
        (remove #(some (fn [[i ch]] (= ch (nth % i))) anti-pos))))
 
-(defn choose [words has? ban? pos anti-pos accept-short?]
-  (let [words' (apply-constraints words has? ban? pos anti-pos)
+(defn choose [step-words has? ban? pos anti-pos accept-short?]
+  (let [words' (apply-constraints step-words has? ban? pos anti-pos)
         solution (when accept-short?
                    (first (filter #(= has? (set %)) words')))]
     (cond (and accept-short? solution)
@@ -42,7 +48,9 @@
           (= 5 (count has?))
           (last (sort-by @word-freqs words'))
           :else
-          (let [cand (max-freq (apply dissoc (letter-freqs words') has?))]
+          (let [avail-freqs (apply dissoc (letter-freqs words' (keys pos)) has?)
+                cand (or (max-freq avail-freqs)
+                         (max-freq (select-keys (letter-freqs @words (keys pos)) (keys avail-freqs))))]
             (choose words' (conj has? cand) ban? pos anti-pos false)))))
 
 (defn apply-feedback [sets word-response]
@@ -53,12 +61,12 @@
       sets
       (case r
         \g (recur [(conj has? l) ban? (assoc pos i l) anti-pos] more (inc i))
-        \y (recur [(conj has? l) ban? pos (assoc anti-pos i l)] more (inc i))
+        \y (recur [(conj has? l) ban? pos (conj anti-pos [i l])] more (inc i))
         \b (recur [has? (conj ban? l) pos anti-pos] more (inc i))))))
 
 (defn build-constraints [word-responses]
   (reduce apply-feedback
-          [#{} #{} {} {}]
+          [#{} #{} {} []]
           word-responses))
 
 (defn solve [responses]
