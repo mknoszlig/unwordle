@@ -14,7 +14,7 @@ Also, I've wanted to take a look at the  [babashka task runner](https://book.bab
 Commands are available as babashka tasks:
 
 - Use `corpus` to fetch a corpus of words, or go directly to
-- `solve` (will ensure the corpus is available if it's missing). Feedback obtained from wordle can be passed on the command line to receive the next guess (see example below).
+- `solve` (will ensure the corpus is available if it's missing). Feedback obtained from wordle can be passed on the command line to receive the next guess (see example below). Provide a strategy (`g` -> global-freq-strategy, `p` -> positional-freq-strategy)
 - When you're done, you can clean everything up using `clean` (removes the corpus).
 
 ### Example
@@ -24,7 +24,7 @@ Let's say the wordle is `toast`.
 We have no information so the script picks a word (using the most frequently used letters in the corpus).
 
 ```bash
-> bb run solve
+> bb run solve g
 rates
 ```
 
@@ -43,7 +43,7 @@ Nice! That's already quite a good start. OK, how do we pass that information bac
 So our `r` in first position that is absent from our target word is encoded as `rb`. For the `a` in second position that is found in the target word (but at a different position) we write `ay`. We follow through for each letter and pass this to the task:
 
 ```bash
-> bb run solve rb ay ty eb sy
+> bb run solve g rb ay ty eb sy
 stain
 ```
 
@@ -54,7 +54,7 @@ Finally! A correct placement!
 We can just append this to our previous feedback to receive the next guess:
 
 ```bash
-> bb run solve rb ay ty eb sy sy ty ag ib nb
+> bb run solve g rb ay ty eb sy sy ty ag ib nb
 coast
 ```
 
@@ -63,7 +63,7 @@ so close...
 ![black](https://abs-0.twimg.com/emoji/v2/72x72/2b1b.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png) ![green](https://abs-0.twimg.com/emoji/v2/72x72/1f7e9.png)
 
 ```bash
-> bb run solve rb ay ty eb sy sy ty ag ib nb cb og ag sg tg
+> bb run solve g rb ay ty eb sy sy ty ag ib nb cb og ag sg tg
 toast
 ```
 

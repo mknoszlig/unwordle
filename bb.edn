@@ -10,5 +10,11 @@
                   (println "no corpus found. fetching from: " unwordle/corpus-remote)
                   (io/copy (:body (curl/get unwordle/corpus-remote {:as :bytes}))
                            (io/file unwordle/file)))
-         solve {:depends [corpus]
-                :task (unwordle/solve *command-line-args*)}}}
+         strategy (get {"g" unwordle/global-freq-strategy
+                        "p" unwordle/positional-freq-strategy}
+                       (first *command-line-args*))
+         solve {:depends [corpus strategy]
+                :task (println (unwordle/solve strategy
+                                               (rest *command-line-args*)))}
+         auto  {:depends [corpus]
+                :task (unwordle/play-random)}}}
