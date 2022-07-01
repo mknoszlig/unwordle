@@ -1,4 +1,4 @@
-[https://babashka.org"](!(bb compatible)[https://github.com/babashka/babashka/raw/master/logo/badge.svg])
+[https://babashka.org](!(bb compatible)[https://github.com/babashka/babashka/raw/master/logo/badge.svg])
 
 # Unwordle
 
