@@ -1,3 +1,5 @@
+[https://babashka.org"](!(bb compatible)[https://github.com/babashka/babashka/raw/master/logo/badge.svg])
+
 # Unwordle
 
 I wrote this to get around the nerd snipe that is [wordle](https://www.powerlanguage.co.uk/wordle/) (It's awesome and fun, I just have neither the time to do it every day nor the willpower to resist). So here's a corpus based solution that i hope will let me sleep at night.
